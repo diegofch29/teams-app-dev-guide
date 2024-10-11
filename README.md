@@ -4,6 +4,9 @@
 
 In this post, you'll learn how to configure and build a React application that authenticates exclusively within Microsoft Teams. This guide focuses on integrating authentication directly with Teams, providing a seamless user experience in the platform. While it's possible to add browser-based authentication using MSAL, we'll keep the focus solely on Teams authentication for simplicity.
 
+> [!CAUTION]
+> In order for you not to waste time you should be working with your Teams administrator or be one to approve our application in Teams, also you need to have Application Administrator, Cloud Application Administrator or above to create the App Registration both are necessary for our authentication.
+
 **Why Authenticate in Microsoft Teams?**
 
 - Streamlined Experience: Users stay within the familiar Teams environment without needing to switch apps or browsers.
@@ -18,6 +21,7 @@ Feel free to extend the project with browser authentication using MSAL if needed
 
 First thing is to configure your app registrationso if you don't know what azure app registration is here you have a simple description.
 
+> [!TIP]
 > Azure App Registration is a process in Azure Active Directory that lets you register your apps to give them an identity. This allows your apps to securely access and use Azure services. By registering, you can set up how your app will authenticate, define what it can access, and manage permissions. It's essential for integrating your apps with Azure and ensuring secure, managed access to resources.
 >
 > Find More information [Azure App Registration](https://learn.microsoft.com/en-us/security/zero-trust/develop/app-registration)
@@ -66,7 +70,7 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   ![Developer Portal Configure your application](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-1.png)
+   ![Developer Portal Configure your application Create](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-1.png)
 
    <br>
 
@@ -74,16 +78,34 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   ![Developer Portal Configure your application](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-2.png)
+   ![Developer Portal Configure your application SSO](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-2.png)
 
    <br>
 
-   4. Go to the "App features" section here we will configure the the URL of our service //TODO
+   4. Go to the "App features" section here we will configure the the URL of our service, you will see several options you can go in detail for each if you want but for this exercise we will focus on the "Personal app" feature.
 
    <br>
 
-   ![Developer Portal Configure your application](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-2.png)
+   ![Developer Portal Configure your application App features](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-3.png)
 
-    <br>
+   <br>
 
-   5. Add your Teams Application ID to your App Registration, yes you have two application Id's one for your App registration and another for your Teams Application
+   5. In here we will configure our URL application you can put your your environment URL since we are going to work locally i will use "https://localhost:3000", you have to use HTTPS protocol Teams will not accept HTTP.
+
+   <br>
+
+   ![Developer Portal Configure your application Personal app](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-4.png)
+
+   <br>
+
+   6. Now we have to publish our application click on the "Publish" button and choose "Publish to your org" or go to the "Publish to org" section and Publish your app.
+
+   <br>
+
+   ![Developer Portal Configure your application Publish app](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-4.png)
+
+   <br>
+
+   7. Now that our application is publish we need a Teams Administrator to approve our application so it will be visible for the organization.
+
+\*. Add your Teams Application ID to your App Registration, yes you have two application Id's one for your App registration and another for your Teams Application

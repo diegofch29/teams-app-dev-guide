@@ -30,7 +30,7 @@ First thing is to configure your app registrationso if you don't know what azure
 
 1. First let's create the your App registration in [Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
 
-   > > Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration
+   > Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration
 
    1. You or your tenant admin needs to create the app registration
 
@@ -55,6 +55,8 @@ First thing is to configure your app registrationso if you don't know what azure
    ![App Registration Adding ID URI](./ScreenShots/AppRegistration/App-Registration-scope.png)
 
    <br>
+
+   ### Create your application in teams
 
 2. Next we have to do is create and configure an application in the [Developer Portal](https://dev.teams.microsoft.com/apps).
 

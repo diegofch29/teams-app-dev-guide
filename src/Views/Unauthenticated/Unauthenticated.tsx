@@ -1,5 +1,8 @@
 import { Button, Text } from "@fluentui/react-components";
-import * as microsoftTeams from "@microsoft/teams-js";
+import {
+  app as teamsApp,
+  authentication as teamsAuthentication,
+} from "@microsoft/teams-js";
 import "./Unauthenticated.scss";
 
 interface IUnauthenticatedProps {
@@ -8,37 +11,37 @@ interface IUnauthenticatedProps {
 
 function Unauthenticated({ handleLogin }: IUnauthenticatedProps): JSX.Element {
   function handleClickLogin() {
-    microsoftTeams.app
+    teamsApp
       .initialize()
       .then(() => {
         getClientToken();
       })
       .catch((error) => {
-        microsoftTeams.app.notifyFailure(error);
+        teamsApp.notifyFailure(error);
       });
   }
 
   function getClientToken() {
-    microsoftTeams.authentication
+    teamsAuthentication
       .getAuthToken()
       .then((result) => {
         handleLogin(result);
       })
       .catch((error) => {
-        microsoftTeams.app.notifyFailure(error);
+        teamsApp.notifyFailure(error);
       });
   }
 
   return (
-    <div className="unathenticated-view-container">
+    <div className="unauthenticated-view-container">
       <Text size={800} weight="bold">
         Unauthenticated!
       </Text>
       <Text size={500}>You are not authenticated, Please login.</Text>
       <Button
-        className="unathenticated-button"
+        className="unauthenticated-button"
         onClick={handleClickLogin}
-        disabled={microsoftTeams.app.isInitialized()}
+        disabled={teamsApp.isInitialized()}
       >
         Login
       </Button>

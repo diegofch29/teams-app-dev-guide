@@ -1,20 +1,21 @@
 import { useState } from "react";
 import "./App.css";
 import Unauthenticated from "./Views/Unauthenticated/Unauthenticated";
-import Autheticated from "./Views/Authenticated/Authenticated";
+import Authenticated from "./Views/Authenticated/Authenticated";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   function handleLogin(token: string) {
     if (token) {
+      //You can use the token here, I am only setting the state to true but you can send this token to the backend.
       setIsAuthenticated(true);
     }
   }
   return (
     <div className="App">
       {isAuthenticated ? (
-        <Autheticated />
+        <Authenticated />
       ) : (
         <Unauthenticated handleLogin={handleLogin} />
       )}

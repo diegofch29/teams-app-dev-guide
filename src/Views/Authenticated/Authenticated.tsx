@@ -13,6 +13,7 @@ function Authenticated(): JSX.Element {
     teamsAuthentication
       .getAuthToken()
       .then((result: string) => {
+        // You can use this toke to send it to the backend
         setToken(result);
       })
       .catch((error) => {

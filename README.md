@@ -5,7 +5,7 @@
 In this post, you'll learn how to configure and build a React application that authenticates exclusively within Microsoft Teams. This guide focuses on integrating authentication directly with Teams, providing a seamless user experience in the platform. While it's possible to add browser-based authentication using MSAL, we'll keep the focus solely on Teams authentication for simplicity.
 
 > [!CAUTION]
-> We are not going to use the [Microsoft Teams Toolkit](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/teams-toolkit-fundamentals), since I found it full of issue and if you don't have almost complete control aver the MS Teams environment of your organization iis going to be almost impossible to use which will be the case for almost every person because of security concerns.
+> We are NOT going to use the [Microsoft Teams Toolkit](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/teams-toolkit-fundamentals), since I found it full of issues and if you don't have almost complete control aver the MS Teams environment of your organization it is going to be almost impossible to use which will be the case for almost every person because of security concerns.
 > This post will focus on a way to work on teams where several administrators are involved and you will require to work with them.
 
 > [!CAUTION]
@@ -32,43 +32,45 @@ First thing is to configure your app registration if you don't know what azure a
 
 <br>
 
-1. First let's create the your App registration in [Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+1. First let's create the your App registration in [Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
 
-   > [!CAUTION]
-   > Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration so contact these admin in your organization
+> [!CAUTION]
+> Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration so contact these admin in your organization
 
-   1. You or your tenant admin needs to create the app registration, name it as your application so you can find it easier.
-
-   <br>
-
-   ![App Registration](./ScreenShots/AppRegistration/App-Registration-Creation.png)
+1.  You or your tenant admin needs to create the app registration, name it as your application so you can find it easier.
 
    <br>
 
-   2. We are going to configure our ID URI which will be our audience and will help us identify our application and protect our backend that we can configure to accept only tokens with this specific audience.
+![App Registration](./ScreenShots/AppRegistration/App-Registration-Creation.png)
 
    <br>
 
-   ![App Registration Adding ID URI](./ScreenShots/AppRegistration/App-Registration-ID-URI.png)
+2.  We are going to configure our ID URI which will be our audience and will help us identify our application and protect our backend that we can configure to accept only tokens with this specific audience.
 
    <br>
 
-   3. Add a scope for the permissions you need,delegated permissions are recommended on the client application you can handle higher permissions in the backend with the "on_behalf" permission so your app is more secure.
+![App Registration Adding ID URI](./ScreenShots/AppRegistration/App-Registration-ID-URI.png)
 
    <br>
 
-   ![App Registration Adding ID URI](./ScreenShots/AppRegistration/App-Registration-scope.png)
+3.  Add a scope for the permissions you need,delegated permissions are recommended on the client application you can handle higher permissions in the backend with the "on_behalf" permission so your app is more secure.
 
    <br>
 
-   4. Now we need to authorize MS Teams to log in users. This id "1fec8e78-bce4-4aaf-ab1b-5451cc387264" will authorize the desktop application and "5e3ce6c0-2b1f-4285-8d4b-75ee78787346" will authorize the web application.
+![App Registration Adding ID URI](./ScreenShots/AppRegistration/App-Registration-scope.png)
 
    <br>
 
-   ![App Registration Adding Application id's](./ScreenShots/AppRegistration/App-Registration-add-application-ids.png)
+4.  Now we need to authorize MS Teams to log in users. This id "1fec8e78-bce4-4aaf-ab1b-5451cc387264" will authorize the desktop application and "5e3ce6c0-2b1f-4285-8d4b-75ee78787346" will authorize the web application.
 
-   > [!CAUTION]
-   > Use the exact id's these are not an example these are used by every developer that wants to use MS Teams
+   <br>
+
+![App Registration Adding Application id's](./ScreenShots/AppRegistration/App-Registration-add-application-ids.png).
+
+   <br>
+
+> [!CAUTION]
+> Use the exact id's these are not an example these are used by every developer that wants to use MS Teams
 
 ### Create your application in teams
 
@@ -126,8 +128,8 @@ First thing is to configure your app registration if you don't know what azure a
 
    <br>
 
-   > [!CAUTION]
-   > Without this approval the application won't be available for the users.
+> [!CAUTION]
+> Without this approval the application won't be available for the users.
 
 ### Let's create the application
 
@@ -385,11 +387,11 @@ npm install sass --save-dev
        HTTPS=true npm start`
        ```
 
-       > [!CAUTION] > Since we don't have a SSL certificate we need to test this in the browser since Teams validates the SSL certificate or you can deploy this to service web hosting service la "Web apps" on azure.
+> [!CAUTION] > Since we don't have a SSL certificate we need to test this in the browser since Teams validates the SSL certificate or you can deploy this to service web hosting service la "Web apps" on azure.
 
-   - Do this only if you want to test locally. To work around the missing SSL certificate let's use teams in a browser ope your "URL" in my case is "https://localhost:3000"
+- Do this only if you want to test locally. To work around the missing SSL certificate let's use teams in a browser ope your "URL" in my case is "https://localhost:3000"
 
-     ![Missing SSL certification workaround](./ScreenShots/TeamsApplication/SSL-work-around.png)
+  ![Missing SSL certification workaround](./ScreenShots/TeamsApplication/SSL-work-around.png)
 
 ### Let's Find Our app in MS Teams
 

@@ -108,6 +108,262 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   7. Now that our application is publish we need a Teams Administrator to approve our application so it will be visible for the organization.
+   7. Now that our application is published we need a Teams Administrator to approve our application so it will be visible for the organization, Sometimes it can take a couple of hours for the application to be visible and available in the teams app store.
 
 \*. Add your Teams Application ID to your App Registration, yes you have two application Id's one for your App registration and another for your Teams Application
+
+### Let's create the application
+
+1. Let's create an application using
+
+```
+npx create-react-app  <your-app-name>  --template typescript
+```
+
+2. Go to your project
+
+```
+cd <your-app-name>
+```
+
+3. Now let's install the teams sdk
+
+```
+npm install --save @microsoft/teams-js
+```
+
+4. You can skip this tep but you can install the Fluent UI that is a collection of UI component that you can use inside of Teams
+
+```
+npm install --save @fluentui/react-components
+```
+
+5. Also you can work with sass for styling your application
+
+```
+npm install sass --save-dev
+```
+
+### Configure your code
+
+1. In your index.tsx to enable fluent UI components you should enclose your app with the FLuentProvider
+
+   ```
+   import React from "react";
+   import ReactDOM from "react-dom/client";
+   import "./index.css";
+   import App from "./App";
+   import reportWebVitals from "./reportWebVitals";
+   import { FluentProvider, webLightTheme } from "@fluentui/react-components";
+
+   const root = ReactDOM.createRoot(
+   document.getElementById("root") as HTMLElement
+   );
+   root.render(
+   <React.StrictMode>
+      <FluentProvider theme={webLightTheme}>
+         <App />
+      </FluentProvider>
+   </React.StrictMode>
+   );
+
+   reportWebVitals();
+   ```
+
+2. Let's create our unauthenticated component here the user will authenticate, the recommendation is to have the user execute a click in order to get the token
+   <br>
+
+   1. import the necessary components from teamsjs
+      <br>
+      ```
+      import {app as teamsApp, authentication as teamsAuthentication} from "@microsoft/teams-js";
+      ```
+   2. Now we are creating a function that will handle the login
+
+      - The initialize function will authenticate the user and initialize the library
+      - if we get any error we notify teams with notifyFailure this do not show any error message to the user
+
+      ```
+      function handleClickLogin() {
+         teamsApp
+            .initialize()
+            .then(() => {
+            getClientToken(); //this function will handle the token acquisition, we will defined it later
+            })
+            .catch((error) => {
+            teamsApp.notifyFailure(error);
+            });
+      }
+      ```
+
+   3. The teams library can handle the token request each time we need the token this is to improve our application security.
+      ```
+      function getClientToken() {
+         teamsAuthentication
+            .getAuthToken()
+            .then((result) => {
+            handleLogin(result);
+            })
+            .catch((error) => {
+            teamsApp.notifyFailure(error);
+            });
+      }
+      ```
+      4. let's create our component so the user can have a button with which to authenticate
+      ```
+         <div className="unauthenticated-view-container">
+         <Text size={800} weight="bold">
+            Unauthenticated!
+         </Text>
+         <Text size={500}>You are not authenticated, Please login.</Text>
+         <Button
+            className="unauthenticated-button"
+            onClick={handleClickLogin}
+            disabled={teamsApp.isInitialized()}>
+            Login
+         </Button>
+      </div>
+      ```
+
+   - You can see a template for the user to authenticate here, In this project the file is Unauthenticated.tsx
+
+     ```
+        import { Button, Text } from "@fluentui/react-components";
+        import {
+        app as teamsApp,
+        authentication as teamsAuthentication,
+        } from "@microsoft/teams-js";
+        import "./Unauthenticated.scss";
+
+        interface IUnauthenticatedProps {
+        readonly handleLogin: Function;
+        }
+
+        function Unauthenticated({ handleLogin }: IUnauthenticatedProps): JSX.Element {
+        function handleClickLogin() {
+           teamsApp
+              .initialize()
+              .then(() => {
+              getClientToken();
+              })
+              .catch((error) => {
+              teamsApp.notifyFailure(error);
+              });
+        }
+
+        function getClientToken() {
+           teamsAuthentication
+              .getAuthToken()
+              .then((result) => {
+              handleLogin(result);// This function  will let the parent component that we have a token and you can send the token to the backend
+              })
+              .catch((error) => {
+              teamsApp.notifyFailure(error);
+              });
+        }
+
+        return (
+           <div className="unauthenticated-view-container">
+              <Text size={800} weight="bold">
+              Unauthenticated!
+              </Text>
+              <Text size={500}>You are not authenticated, Please login.</Text>
+              <Button
+              className="unauthenticated-button"
+              onClick={handleClickLogin}
+              disabled={teamsApp.isInitialized()}
+              >
+              Login
+              </Button>
+           </div>
+        );
+        }
+
+        export default Unauthenticated;
+     ```
+
+3. Now that we have an authenticated user we will set the a state to know we have an authenticated user and a token you can us it to send it to your backend. In your app.tsx you can use something like this.
+
+   ```
+   import { useState } from "react";
+   import "./App.css";
+   import Unauthenticated from "./Views/Unauthenticated/Unauthenticated";
+   import Authenticated from "./Views/Authenticated/Authenticated";
+
+   function App() {
+   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+   function handleLogin(token: string) {
+      if (token) {
+         //You can use the token here, I am only setting the state to true but you can send this token to the backend.
+         setIsAuthenticated(true);
+      }
+   }
+   return (
+      <div className="App">
+         {isAuthenticated ? (
+         <Authenticated />
+         ) : (
+         <Unauthenticated handleLogin={handleLogin} />
+         )}
+      </div>
+   );
+   }
+
+   export default App;
+   ```
+
+4. You have a token that you can send to the backend you may need another eventually, to get another token if needed you can use getAuthToken. like I am using in the Authenticated.tsx component.
+
+   ```
+   import { useEffect, useState } from "react";
+   import {
+   app as teamsApp,
+   authentication as teamsAuthentication,
+   } from "@microsoft/teams-js";
+   import { Text } from "@fluentui/react-components";
+   import "./Authenticated.scss";
+
+   function Authenticated(): JSX.Element {
+   const [token, setToken] = useState<string | null>(null);
+
+   function getToken() {
+      teamsAuthentication
+         .getAuthToken()
+         .then((result: string) => {
+         setToken(result);
+         })
+         .catch((error) => {
+         teamsApp.notifyFailure(error);
+         });
+   }
+
+   useEffect(() => {
+      if (!token) {
+         getToken();
+      }
+   }, [token]);
+
+   return (
+      <div className="authenticated-view">
+         <Text weight="bold">Authenticated</Text>
+         <Text weight="semibold">You can send this token to the backend.</Text>
+         <div className="authenticated-string">{token}</div>
+      </div>
+   );
+   }
+
+   export default Authenticated;
+   ```
+
+   - To finish this let's start the application with the following command
+     - Powershell
+       ```
+         ($env:HTTPS = "true") -and (npm start)
+       ```
+     - Linux
+       ```
+         HTTPS=true npm start
+       ```
+
+Let's Find Our app in MS Teams

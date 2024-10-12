@@ -5,7 +5,11 @@
 In this post, you'll learn how to configure and build a React application that authenticates exclusively within Microsoft Teams. This guide focuses on integrating authentication directly with Teams, providing a seamless user experience in the platform. While it's possible to add browser-based authentication using MSAL, we'll keep the focus solely on Teams authentication for simplicity.
 
 > [!CAUTION]
-> In order for you not to waste time you should be working with your Teams administrator or be one to approve our application in Teams, also you need to have Application Administrator, Cloud Application Administrator or above to create the App Registration both are necessary for our authentication.
+> We are not going to use the [Microsoft Teams Toolkit](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/teams-toolkit-fundamentals), since I found it full of issue and if you don't have almost complete control aver the MS Teams environment of your organization iis going to be almost impossible to use which will be the case for almost every person because of security concerns.
+> This post will focus on a way to work on teams where several administrators are involved and you will require to work with them.
+
+> [!CAUTION]
+> In order for you not to waste time you should be working with your Teams administrator or be one to approve our application in Teams, also you need to have Application Administrator, Cloud Application Administrator or above to create the App Registration both are necessary for our authentication or again know who these admin is.
 
 **Why Authenticate in Microsoft Teams?**
 
@@ -19,7 +23,7 @@ Feel free to extend the project with browser authentication using MSAL if needed
 
 ### App Registration Configuration
 
-First thing is to configure your app registrationso if you don't know what azure app registration is here you have a simple description.
+First thing is to configure your app registration if you don't know what azure app registration is, here you have a simple description.
 
 > [!TIP]
 > Azure App Registration is a process in Azure Active Directory that lets you register your apps to give them an identity. This allows your apps to securely access and use Azure services. By registering, you can set up how your app will authenticate, define what it can access, and manage permissions. It's essential for integrating your apps with Azure and ensuring secure, managed access to resources.
@@ -30,9 +34,10 @@ First thing is to configure your app registrationso if you don't know what azure
 
 1. First let's create the your App registration in [Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
 
-   > Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration
+   > [!CAUTION]
+   > Note: if don't have admin role in your tenant or the necessary permissions you will not be able to create the App registration so contact these admin in your organization
 
-   1. You or your tenant admin needs to create the app registration
+   1. You or your tenant admin needs to create the app registration, name it as your application so you can find it easier.
 
    <br>
 
@@ -40,7 +45,7 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   2. We are going to configure our ID URI which will be our audience and will help us identify our application and protect our backend that we can configure to accept only token with this specific audience.
+   2. We are going to configure our ID URI which will be our audience and will help us identify our application and protect our backend that we can configure to accept only tokens with this specific audience.
 
    <br>
 
@@ -48,7 +53,7 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   3. Add a scope for delegated permissions only recommended, you can handle higher permissions in the backend with the "on_behalf" permission so your app is more secure.
+   3. Add a scope for the permissions you need,delegated permissions are recommended on the client application you can handle higher permissions in the backend with the "on_behalf" permission so your app is more secure.
 
    <br>
 
@@ -56,9 +61,18 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   ### Create your application in teams
+   4. Now we need to authorize MS Teams to log in users. This id "1fec8e78-bce4-4aaf-ab1b-5451cc387264" will authorize the desktop application and "5e3ce6c0-2b1f-4285-8d4b-75ee78787346" will authorize the web application.
 
-2. Next we have to do is create and configure an application in the [Developer Portal](https://dev.teams.microsoft.com/apps).
+   <br>
+
+   ![App Registration Adding Application id's](./ScreenShots/AppRegistration/App-Registration-add-application-ids.png)
+
+   > [!CAUTION]
+   > Use the exact id's these are not an example these are used by every developer that wants to use MS Teams
+
+### Create your application in teams
+
+1. Next thing we have to do is create and configure an application in the [Developer Portal](https://dev.teams.microsoft.com/apps).
 
    <br>
 
@@ -104,13 +118,16 @@ First thing is to configure your app registrationso if you don't know what azure
 
    <br>
 
-   ![Developer Portal Configure your application Publish app](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-4.png)
+   ![Developer Portal Configure your application Publish app](/ScreenShots/DeveloperPortal/Developer-Portal-App-Configuration-5.png)
 
    <br>
 
-   7. Now that our application is published we need a Teams Administrator to approve our application so it will be visible for the organization, Sometimes it can take a couple of hours for the application to be visible and available in the teams app store.
+   7. Now that our application is published we need a Teams Administrator to approve our application in the [Teams admin portal](https://admin.teams.microsoft.com/) so it will be visible for the organization, Sometimes it can take a couple of hours for the application to be visible and available in the teams app store.
 
-\*. Add your Teams Application ID to your App Registration, yes you have two application Id's one for your App registration and another for your Teams Application
+   <br>
+
+   > [!CAUTION]
+   > Without this approval the application won't be available for the users.
 
 ### Let's create the application
 
@@ -209,7 +226,7 @@ npm install sass --save-dev
             });
       }
       ```
-      4. let's create our component so the user can have a button with which to authenticate
+      4. Let's create a component that provides a button for user authentication.
       ```
          <div className="unauthenticated-view-container">
          <Text size={800} weight="bold">
@@ -282,7 +299,7 @@ npm install sass --save-dev
         export default Unauthenticated;
      ```
 
-3. Now that we have an authenticated user we will set the a state to know we have an authenticated user and a token you can us it to send it to your backend. In your app.tsx you can use something like this.
+3. Now that we have an authenticated user we will set the a state to know we have an authenticated user and a token you can use to send it to your backend. In our app.tsx you can use something like this.
 
    ```
    import { useState } from "react";
@@ -313,7 +330,7 @@ npm install sass --save-dev
    export default App;
    ```
 
-4. You have a token that you can send to the backend you may need another eventually, to get another token if needed you can use getAuthToken. like I am using in the Authenticated.tsx component.
+4. You have a token now that you can send to the backend you may need another eventually, to get another token if needed you can use getAuthToken. like I am using in the Authenticated.tsx component.
 
    ```
    import { useEffect, useState } from "react";
@@ -357,13 +374,45 @@ npm install sass --save-dev
    ```
 
    - To finish this let's start the application with the following command
+
      - Powershell
        ```
          ($env:HTTPS = "true") -and (npm start)
        ```
      - Linux
+
        ```
-         HTTPS=true npm start
+       HTTPS=true npm start`
        ```
 
-Let's Find Our app in MS Teams
+       > [!CAUTION] > Since we don't have a SSL certificate we need to test this in the browser since Teams validates the SSL certificate or you can deploy this to service web hosting service la "Web apps" on azure.
+
+   - Do this only if you want to test locally. To work around the missing SSL certificate let's use teams in a browser ope your "URL" in my case is "https://localhost:3000"
+
+     ![Missing SSL certification workaround](./ScreenShots/TeamsApplication/SSL-work-around.png)
+
+### Let's Find Our app in MS Teams
+
+- Go to your teams application, let us use the web application for testing purposes, on the left bottom you will find and section called apps, there you can search for your application name and click on add.
+
+   <br>
+
+  ![Find your application](./ScreenShots/UseApplication/Find-Add-application.png)
+
+- You will see these modal, click on add amd then you will see the option to open the application
+
+  - ![Add your application](./ScreenShots/UseApplication/Add-Open-application.png)
+
+  - ![Add your application](./ScreenShots/UseApplication/Open-application.png)
+
+<br>
+
+- Now you can see your application
+
+  ![Add your application](./ScreenShots/UseApplication/Use-application.png)
+
+- For this project where we implemented a login button the only thing you need to do is click on it, after that you will be able to see the token that the teams library provides.
+
+  ![Add your application](./ScreenShots/UseApplication/Application-Finished.png)
+
+## that is it, you have working application inside MS teams

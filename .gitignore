@@ -140,6 +140,7 @@ dist
 
 # production
 /build
+**/appConfig.ts
 
 # misc
 .DS_Store
